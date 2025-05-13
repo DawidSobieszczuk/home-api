@@ -1,7 +1,12 @@
 from sanic import Sanic
 from sanic import response
 
+from config import Config
+from database import Database
+
 sanic = Sanic("AssistantAPI")
+config = Config("config.yaml")
+db = Database(config.mysql_host, config.mysql_port, config.mysql_database, config.mysql_user, config.mysql_password)
 
 @sanic.get("/")
 async def index(request):
