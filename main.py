@@ -10,6 +10,7 @@ sanic = Sanic("AssistantAPI", dumps=dumps)
 config = Config("config.yaml")
 db = Database(config.mysql_host, config.mysql_port, config.mysql_database, config.mysql_user, config.mysql_password)
 
+#region db_crud
 ## DB Check
 def is_table_exist(name):
     results = db.query("SHOW TABLES")
@@ -148,5 +149,15 @@ async def delete(request, name, id):
         "data": []
     })
 
+#endregion
+
+#region radio
+@sanic.get("/radio")
+def radio(request):
+    return response.json({"a":"b"})
+
+#endregion
+
+
 if __name__ == "__main__":
-    sanic.run(host="0.0.0.0", port=8000, debug=False)
+    sanic.run(host="0.0.0.0", port=8000, debug=True, auto_reload=True)
