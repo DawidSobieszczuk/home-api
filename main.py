@@ -6,9 +6,15 @@ from database import Database
 
 from orjson import dumps
 
+import subprocess
+
 sanic = Sanic("AssistantAPI", dumps=dumps)
 config = Config("config.yaml")
 db = Database(config.mysql_host, config.mysql_port, config.mysql_database, config.mysql_user, config.mysql_password)
+
+@sanic.before_server_start
+async def setup_context(app, loop):
+    app.ctx.mplayer_process = None
 
 #region db_crud
 ## DB Check
@@ -152,9 +158,23 @@ async def delete(request, name, id):
 #endregion
 
 #region radio
-@sanic.get("/radio")
-def radio(request):
-    return response.json({"a":"b"})
+
+def read_all_from_subprocess(process):
+    lines = []
+    while True:
+        line = process.stdout.readline()
+        if not line:
+            break
+        lines.append(line)
+
+    return lines
+        
+
+# start, stop, volume_up, volume_down, mute, unmute, station
+@sanic.post("/radio")
+async def radio(request):
+    #TODO: na czacie z gemini masz informacje
+    return response.json({"status": "ok"})
 
 #endregion
 
